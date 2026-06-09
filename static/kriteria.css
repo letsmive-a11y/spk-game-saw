@@ -1,0 +1,508 @@
+/* ─── Reset & Base ─────────────────────────────────── */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #f5f5f5;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,0.82), rgba(0,0,0,0.36)),
+        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* ─── Animations ────────────────────────────────────── */
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-28px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Left Rail ─────────────────────────────────────── */
+.left-rail {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 10;
+    display: flex;
+    width: 84px;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background: #f2df00;
+    color: #1d1d1d;
+    box-shadow: 16px 0 36px rgba(0,0,0,0.32);
+    animation: slideInLeft 0.55s ease both;
+}
+
+.rail-logo {
+    display: grid;
+    width: 100%;
+    height: 92px;
+    place-items: center;
+    color: #1d1d1d;
+    font-size: 28px;
+    font-weight: 1000;
+    letter-spacing: -1px;
+}
+
+.left-rail nav {
+    display: grid;
+    width: 100%;
+}
+
+.left-rail nav a,
+.rail-user {
+    display: grid;
+    position: relative;
+    width: 100%;
+    min-height: 54px;
+    place-items: center;
+    border-top: 1px solid rgba(0,0,0,0.14);
+    color: #1d1d1d;
+    font-weight: 900;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.left-rail nav a.active,
+.left-rail nav a:hover {
+    background: #202020;
+    color: #f2df00;
+}
+
+.left-rail nav a:hover {
+    transform: translateX(4px);
+}
+
+.left-rail nav svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.left-rail nav a::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    z-index: 20;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #202020;
+    color: #f2df00;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-6px, -50%);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.left-rail nav a:hover::after {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+.rail-user {
+    height: 74px;
+    font-size: 16px;
+}
+
+/* ─── Page Layout ───────────────────────────────────── */
+.page-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 32px 32px 40px 116px;
+    animation: fadeUp 0.55s ease 0.1s both;
+}
+
+/* ─── Page Header ───────────────────────────────────── */
+.page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(242,223,0,0.2);
+}
+
+.page-label {
+    margin: 0 0 6px;
+    color: #f2df00;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.page-title h1 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1;
+}
+
+.header-back {
+    display: inline-grid;
+    place-items: center;
+    padding: 10px 18px;
+    border: 1px solid rgba(242,223,0,0.35);
+    border-radius: 9px;
+    background: rgba(255,255,255,0.04);
+    color: #f2df00;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.header-back:hover {
+    background: rgba(242,223,0,0.1);
+    border-color: #f2df00;
+    transform: translateX(-3px);
+}
+
+/* ─── Card Base ─────────────────────────────────────── */
+.card {
+    border: 1px solid rgba(242,223,0,0.2);
+    border-radius: 14px;
+    background: rgba(39,39,39,0.90);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    overflow: hidden;
+}
+
+.card-label {
+    margin: 0 0 16px;
+    color: #f2df00;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+/* ─── Add Card ──────────────────────────────────────── */
+.add-card {
+    padding: 24px 28px;
+}
+
+.add-form {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: start;
+}
+
+/* ─── Inputs & Select ────────────────────────────────── */
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid rgba(242,223,0,0.3);
+    border-radius: 9px;
+    outline: none;
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    transition: border-color 0.18s ease, background 0.18s ease;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: #f2df00;
+    background: rgba(242,223,0,0.07);
+}
+
+input::placeholder {
+    color: #717171;
+}
+
+select {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23f2df00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+select option {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+/* ─── Primary Button ─────────────────────────────────── */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 9px;
+    background: #f2df00;
+    color: #111;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: filter 0.18s ease, transform 0.18s ease;
+}
+
+.btn-primary svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+}
+
+/* ─── Table Card ─────────────────────────────────────── */
+.table-card {
+    padding: 0;
+}
+
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 28px 16px;
+    border-bottom: 1px solid rgba(242,223,0,0.12);
+}
+
+.card-top .card-label {
+    margin: 0;
+}
+
+.film-count {
+    color: #717171;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 860px;
+}
+
+thead tr {
+    background: rgba(0,0,0,0.35);
+}
+
+th {
+    height: 46px;
+    padding: 0 12px;
+    color: #f2df00;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+td {
+    padding: 12px;
+    border-top: 1px solid rgba(242,223,0,0.08);
+    vertical-align: middle;
+}
+
+tbody tr {
+    transition: background 0.15s ease;
+}
+
+tbody tr:hover td {
+    background: rgba(242,223,0,0.05);
+}
+
+/* ─── Column Widths ──────────────────────────────────── */
+.col-no          { width: 44px; }
+.col-nama        { width: 22%; }
+.col-bobot-input { width: 12%; }
+.col-bobot-des   { width: 12%; }
+.col-tipe        { width: 14%; }
+.col-ket         { width: 26%; }
+.col-aksi        { width: 110px; }
+
+td.col-no {
+    text-align: center;
+    color: #717171;
+    font-size: 12px;
+}
+
+td.col-bobot-des {
+    text-align: center;
+}
+
+/* ─── Desimal Badge ──────────────────────────────────── */
+.desimal-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid rgba(242,223,0,0.25);
+    border-radius: 6px;
+    background: rgba(242,223,0,0.06);
+    color: #f2df00;
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ─── Type Badge ─────────────────────────────────────── */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge-benefit {
+    border: 1px solid rgba(74,222,128,0.3);
+    background: rgba(74,222,128,0.08);
+    color: #4ade80;
+}
+
+.badge-cost {
+    border: 1px solid rgba(251,146,60,0.3);
+    background: rgba(251,146,60,0.08);
+    color: #fb923c;
+}
+
+/* ─── Action Cell ────────────────────────────────────── */
+td.col-aksi {
+    vertical-align: middle;
+}
+
+.aksi-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.btn-update {
+    height: 34px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 7px;
+    background: #f2df00;
+    color: #111;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.btn-update:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+.btn-hapus {
+    display: grid;
+    height: 34px;
+    place-items: center;
+    border: 1px solid rgba(255,80,80,0.3);
+    border-radius: 7px;
+    background: rgba(255,80,80,0.06);
+    color: #ff6b6b;
+    font-size: 12px;
+    font-weight: 900;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-hapus:hover {
+    background: rgba(255,80,80,0.15);
+    border-color: rgba(255,80,80,0.7);
+}
+
+/* ─── Empty State ───────────────────────────────────── */
+.empty-state {
+    padding: 60px 20px !important;
+    text-align: center;
+    color: #555;
+}
+
+.empty-state svg {
+    display: block;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 14px;
+    opacity: 0.4;
+}
+
+.empty-state span {
+    display: block;
+    font-size: 14px;
+}
+
+/* ─── Responsive ─────────────────────────────────────── */
+@media (max-width: 1100px) {
+    .add-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .add-form .btn-primary {
+        grid-column: 1 / -1;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 760px) {
+    .left-rail {
+        width: 64px;
+    }
+
+    .page-wrap {
+        padding: 20px 12px 32px 76px;
+    }
+
+    .add-form {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+}

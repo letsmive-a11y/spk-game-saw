@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Film</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='film.css') }}">
+</head>
+<body>
+
+<aside class="left-rail">
+    <a class="rail-logo" href="/">M</a>
+    <nav>
+        <a href="/" data-label="Dashboard" aria-label="Dashboard">
+            <svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/></svg>
+        </a>
+        <a class="active" href="/film" data-label="Data Film" aria-label="Data Film">
+            <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>
+        </a>
+        <a href="/kriteria" data-label="Kriteria" aria-label="Kriteria">
+            <svg viewBox="0 0 24 24"><path d="M7 4v3M17 4v3M5 7h14v13H5z"/><path d="M8 11h8M8 15h5"/></svg>
+        </a>
+        <a href="/nilai" data-label="Input Nilai" aria-label="Input Nilai">
+            <svg viewBox="0 0 24 24"><path d="M5 5h5v5H5zM14 5h5v5h-5zM5 14h5v5H5zM14 14h5v5h-5z"/></svg>
+        </a>
+        <a href="/hasil" data-label="Hasil Film" aria-label="Hasil Film">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        </a>
+    </nav>
+    <span class="rail-user">SPK</span>
+</aside>
+
+<main class="page-wrap">
+    <header class="page-header">
+        <div class="page-title">
+            <p class="page-label">Master Data</p>
+            <h1>Data Film</h1>
+        </div>
+        <a class="header-back" href="/">Dashboard</a>
+    </header>
+
+    <section class="card add-card">
+        <p class="card-label">Tambah Film</p>
+        <form class="add-form" action="/tambah_film" method="POST" enctype="multipart/form-data">
+            <input type="text" name="nama_game" placeholder="Nama Film" required>
+            <input type="text" name="genre" placeholder="Genre" required>
+            <input type="text" name="developer" placeholder="Sutradara" required>
+
+            <div class="file-group">
+                <label class="file-label">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4M8 8l4-4 4 4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Upload Poster
+                    <input type="file" name="poster_file" accept="image/*">
+                </label>
+                <input type="url" name="poster_url" placeholder="URL Poster Film">
+            </div>
+
+            <button class="btn-primary" type="submit">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Tambah
+            </button>
+        </form>
+    </section>
+
+    <section class="card table-card">
+        <div class="card-top">
+            <p class="card-label">Daftar Film</p>
+            <span class="film-count">{{ data_game|length }} film</span>
+        </div>
+
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-no">No</th>
+                        <th class="col-poster">Poster</th>
+                        <th class="col-nama">Nama Film</th>
+                        <th class="col-genre">Genre</th>
+                        <th class="col-sutradara">Sutradara</th>
+                        <th class="col-url">Poster</th>
+                        <th class="col-aksi">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for game in data_game %}
+                    <tr>
+                        <td class="col-no">{{ loop.index }}</td>
+                        <td class="col-poster">
+                            {% if game[4] %}
+                            <img class="poster-thumb" src="{{ game[4] }}" alt="Poster {{ game[1] }}">
+                            {% else %}
+                            <span class="poster-empty-thumb">
+                                <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 15l3-3 2 2 2-3 2 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="col-nama">
+                            <input form="film-{{ game[0] }}" type="text" name="nama_game" value="{{ game[1] }}" required>
+                        </td>
+                        <td class="col-genre">
+                            <input form="film-{{ game[0] }}" type="text" name="genre" value="{{ game[2] }}" required>
+                        </td>
+                        <td class="col-sutradara">
+                            <input form="film-{{ game[0] }}" type="text" name="developer" value="{{ game[3] }}" required>
+                        </td>
+                        <td class="col-url">
+                            <div class="url-inner">
+                                <label class="file-label-sm">
+                                    Upload
+                                    <input form="film-{{ game[0] }}" type="file" name="poster_file" accept="image/*">
+                                </label>
+                                <input form="film-{{ game[0] }}" type="url" name="poster_url" value="{{ game[4] or '' }}" placeholder="URL Poster">
+                            </div>
+                        </td>
+                        <td class="col-aksi">
+                            <form id="film-{{ game[0] }}" action="/update_film/{{ game[0] }}" method="POST" enctype="multipart/form-data"></form>
+                            <div class="aksi-inner">
+                                <button class="btn-update" form="film-{{ game[0] }}" type="submit">Update</button>
+                                <a class="btn-hapus" href="/hapus_film/{{ game[0] }}" onclick="return confirm('Hapus data ini?')">Hapus</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td class="empty-state" colspan="7">
+                            <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                            <span>Belum ada data film.</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

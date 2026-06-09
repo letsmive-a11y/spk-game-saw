@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard SPK Film</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+
+<aside class="left-rail">
+    <a class="rail-logo" href="/">M</a>
+    <nav>
+        <a class="active" href="/" data-label="Dashboard" aria-label="Dashboard">
+            <svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/></svg>
+        </a>
+        <a href="/film" data-label="Data Film" aria-label="Data Film">
+            <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>
+        </a>
+        <a href="/kriteria" data-label="Kriteria" aria-label="Kriteria">
+            <svg viewBox="0 0 24 24"><path d="M7 4v3M17 4v3M5 7h14v13H5z"/><path d="M8 11h8M8 15h5"/></svg>
+        </a>
+        <a href="/nilai" data-label="Input Nilai" aria-label="Input Nilai">
+            <svg viewBox="0 0 24 24"><path d="M5 5h5v5H5zM14 5h5v5h-5zM5 14h5v5H5zM14 14h5v5h-5z"/></svg>
+        </a>
+        <a href="/hasil" data-label="Hasil Film" aria-label="Hasil Film">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        </a>
+    </nav>
+    <span class="rail-user">SPK</span>
+</aside>
+
+<main class="movie-dashboard">
+    <section class="movie-panel">
+        <div class="poster-column">
+            <div class="poster-frame" id="mainPoster">
+                {% if film_terbaik and film_terbaik.poster_url %}
+                <img src="{{ film_terbaik.poster_url }}" alt="Poster {{ film_terbaik.nama_game }}">
+                {% else %}
+                <div class="poster-empty">Poster</div>
+                {% endif %}
+            </div>
+
+            <div class="poster-actions">
+                <a href="/nilai">Input Nilai</a>
+                <a href="/hasil">Ranking</a>
+            </div>
+
+            <div class="mini-grid">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
+            <div class="poster-criteria">
+                <div class="section-title">
+                    <span>Kriteria Aktif</span>
+                    <a href="/kriteria">Atur</a>
+                </div>
+
+                <div class="criteria-grid">
+                    {% for kriteria in daftar_kriteria[:4] %}
+                    <a href="/kriteria">
+                        <strong>{{ kriteria[0] }}</strong>
+                        <small>{{ (kriteria[1] * 100)|round|int }}% - {{ kriteria[2]|capitalize }}</small>
+                    </a>
+                    {% else %}
+                    <a href="/kriteria">
+                        <strong>Belum ada kriteria</strong>
+                        <small>Tambah kriteria penilaian</small>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="movie-info">
+            <header class="movie-header">
+                <p id="mainRank">Peringkat 01 - SPK Film SAW</p>
+                {% if film_terbaik %}
+                <h1 id="mainTitle">{{ film_terbaik.nama_game }} <span>({{ progres_nilai }}%)</span></h1>
+                {% else %}
+                <h1 id="mainTitle">Dashboard Film <span>(SAW)</span></h1>
+                {% endif %}
+                <p class="synopsis">
+                    Sistem pendukung keputusan untuk menentukan film terbaik berdasarkan bobot kriteria,
+                    tipe benefit-cost, dan matrix nilai yang sudah diisi.
+                </p>
+            </header>
+
+            <section class="score-row">
+                <div class="score-ring" id="mainScoreRing" style="--score: {{ (film_terbaik.total * 100)|round|int if film_terbaik else 0 }};">
+                    <strong id="mainScore">{{ "%.1f"|format((film_terbaik.total * 10) if film_terbaik else 0) }}</strong>
+                </div>
+
+                <div class="score-list">
+                    <div>
+                        <span>Total Film</span>
+                        <strong>{{ total_film }}</strong>
+                    </div>
+                    <div>
+                        <span>Kriteria</span>
+                        <strong>{{ total_kriteria }}</strong>
+                    </div>
+                    <div>
+                        <span>Nilai</span>
+                        <strong>{{ total_nilai }}/{{ kebutuhan_nilai }}</strong>
+                    </div>
+                </div>
+
+                <div class="meta-grid">
+                    <div>
+                        <span>Benefit</span>
+                        <strong>{{ total_benefit }}</strong>
+                    </div>
+                    <div>
+                        <span>Cost</span>
+                        <strong>{{ total_cost }}</strong>
+                    </div>
+                    <div>
+                        <span>Metode</span>
+                        <strong>SAW</strong>
+                    </div>
+                    <div>
+                        <span>Status</span>
+                        <strong>{{ progres_nilai }}%</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cast-list">
+                <a href="/film">
+                    <span>01</span>
+                    <div>
+                        <strong>Data Film</strong>
+                        <small>Judul, genre, sutradara, poster</small>
+                    </div>
+                    <b>Kelola</b>
+                </a>
+                <a href="/kriteria">
+                    <span>02</span>
+                    <div>
+                        <strong>Data Kriteria</strong>
+                        <small>Bobot, benefit, cost</small>
+                    </div>
+                    <b>Atur</b>
+                </a>
+                <a href="/nilai">
+                    <span>03</span>
+                    <div>
+                        <strong>Input Nilai</strong>
+                        <small>Matrix penilaian film</small>
+                    </div>
+                    <b>Isi</b>
+                </a>
+                <a href="/hasil">
+                    <span>04</span>
+                    <div>
+                        <strong>Hasil Film</strong>
+                        <small>Ranking dan rekomendasi terbaik</small>
+                    </div>
+                    <b>Lihat</b>
+                </a>
+            </section>
+
+            <section class="dashboard-bottom">
+                <div class="other-films">
+                    <div class="section-title">
+                        <span>Film Lain</span>
+                        <a href="/hasil">Lihat semua</a>
+                    </div>
+
+                    <div class="other-film-grid">
+                        {% for film in film_lain %}
+                        <button
+                            class="other-film-card"
+                            type="button"
+                            title="Jadikan {{ film.nama_game }} sebagai preview utama"
+                            data-title="{{ film.nama_game }}"
+                            data-poster="{{ film.poster_url or '' }}"
+                            data-score="{{ "%.1f"|format(film.total * 10) }}"
+                            data-percent="{{ (film.total * 100)|round|int }}"
+                            data-rank="{{ "%02d"|format(loop.index + 1) }}"
+                        >
+                            {% if film.poster_url %}
+                            <img src="{{ film.poster_url }}" alt="Poster {{ film.nama_game }}">
+                            {% else %}
+                            <div class="other-poster-empty">Film</div>
+                            {% endif %}
+                            <div>
+                                <strong>{{ film.nama_game }}</strong>
+                                <small>#{{ "%02d"|format(loop.index + 1) }} - Skor {{ "%.1f"|format(film.total * 10) }}</small>
+                            </div>
+                        </button>
+                        {% else %}
+                        <a class="other-film-card empty-card" href="/film">
+                            <div class="other-poster-empty">+</div>
+                            <div>
+                                <strong>Belum ada film lain</strong>
+                                <small>Tambah data film baru</small>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="decision-strip">
+                    <div>
+                        <span>Matrix</span>
+                        <strong>{{ progres_nilai }}%</strong>
+                    </div>
+                    <div class="progress-track" data-progress="{{ progres_nilai }}" aria-label="Progress nilai">
+                        <span></span>
+                    </div>
+                    <p>{{ total_nilai }}/{{ kebutuhan_nilai }} nilai terisi</p>
+                    <a href="/nilai">Lengkapi Nilai</a>
+                </div>
+
+                <div class="dashboard-fill">
+                    <div>
+                        <span>Rekomendasi</span>
+                        <strong>{{ film_terbaik.nama_game if film_terbaik else "Belum ada" }}</strong>
+                    </div>
+                    <div>
+                        <span>Metode</span>
+                        <strong>SAW Ranking</strong>
+                    </div>
+                    <div>
+                        <span>Tujuan</span>
+                        <strong>Pilih film terbaik</strong>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</main>
+
+<script>
+    const filmButtons = document.querySelectorAll(".other-film-card[data-title]");
+    const mainPoster = document.getElementById("mainPoster");
+    const mainRank = document.getElementById("mainRank");
+    const mainTitle = document.getElementById("mainTitle");
+    const mainScore = document.getElementById("mainScore");
+    const mainScoreRing = document.getElementById("mainScoreRing");
+    const movieHeader = document.querySelector(".movie-header");
+    const scoreRow = document.querySelector(".score-row");
+    const progressTrack = document.querySelector(".progress-track");
+
+    if (progressTrack) {
+        const progressValue = Math.max(0, Math.min(100, Number(progressTrack.dataset.progress) || 0));
+        progressTrack.querySelector("span").style.width = `${progressValue}%`;
+    }
+
+    filmButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            if (button.classList.contains("is-selected")) {
+                return;
+            }
+
+            const title = button.dataset.title;
+            const poster = button.dataset.poster;
+            const score = button.dataset.score;
+            const percent = button.dataset.percent;
+            const rank = button.dataset.rank;
+
+            mainRank.textContent = `Peringkat ${rank} - SPK Film SAW`;
+            mainTitle.textContent = title + " ";
+            const scoreLabel = document.createElement("span");
+            scoreLabel.textContent = `(${score})`;
+            mainTitle.appendChild(scoreLabel);
+            mainScore.textContent = score;
+            mainScoreRing.style.setProperty("--score", percent);
+
+            if (poster) {
+                const posterImage = document.createElement("img");
+                posterImage.src = poster;
+                posterImage.alt = `Poster ${title}`;
+                mainPoster.replaceChildren(posterImage);
+            } else {
+                const posterEmpty = document.createElement("div");
+                posterEmpty.className = "poster-empty";
+                posterEmpty.textContent = "Poster";
+                mainPoster.replaceChildren(posterEmpty);
+            }
+
+            filmButtons.forEach((item) => item.classList.remove("is-selected"));
+            button.classList.add("is-selected");
+
+            mainPoster.classList.remove("is-switching-in");
+            movieHeader.classList.remove("is-switching-in");
+            scoreRow.classList.remove("is-switching-in");
+
+            requestAnimationFrame(() => {
+                mainPoster.classList.add("is-switching-in");
+                movieHeader.classList.add("is-switching-in");
+                scoreRow.classList.add("is-switching-in");
+            });
+        });
+    });
+</script>
+</body>
+</html>

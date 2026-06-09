@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Ranking – SPK</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='hasil.css') }}">
+</head>
+<body>
+
+<aside class="left-rail">
+    <a class="rail-logo" href="/">M</a>
+    <nav>
+        <a href="/" data-label="Dashboard" aria-label="Dashboard">
+            <svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/></svg>
+        </a>
+        <a href="/film" data-label="Data Film" aria-label="Data Film">
+            <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M9 20h6M12 16v4"/></svg>
+        </a>
+        <a href="/kriteria" data-label="Kriteria" aria-label="Kriteria">
+            <svg viewBox="0 0 24 24"><path d="M7 4v3M17 4v3M5 7h14v13H5z"/><path d="M8 11h8M8 15h5"/></svg>
+        </a>
+        <a href="/nilai" data-label="Input Nilai" aria-label="Input Nilai">
+            <svg viewBox="0 0 24 24"><path d="M5 5h5v5H5zM14 5h5v5h-5zM5 14h5v5H5zM14 14h5v5h-5z"/></svg>
+        </a>
+        <a class="active" href="/hasil" data-label="Hasil Film" aria-label="Hasil Film">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        </a>
+    </nav>
+    <span class="rail-user">SPK</span>
+</aside>
+
+<main class="page-wrap">
+
+    <!-- Header -->
+    <header class="page-header">
+        <div class="page-title">
+            <p class="page-label">SPK Film SAW</p>
+            <h1>Hasil Ranking</h1>
+        </div>
+        <a class="header-back" href="/">← Dashboard</a>
+    </header>
+
+    <!-- Winner Card -->
+    {% if hasil_ranking %}
+    <div class="winner-card">
+        <div class="winner-poster-wrap">
+            <span class="winner-crown">👑</span>
+            {% if hasil_ranking[0].poster_url %}
+            <img class="winner-poster" src="{{ hasil_ranking[0].poster_url }}" alt="Poster {{ hasil_ranking[0].nama_game }}">
+            {% else %}
+            <div class="winner-poster" style="background:rgba(242,223,0,0.06);display:grid;place-items:center;">
+                <svg viewBox="0 0 24 24" fill="none" width="36" height="36"><rect x="4" y="5" width="16" height="14" rx="2" stroke="rgba(242,223,0,0.3)" stroke-width="1.5"/></svg>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="winner-info">
+            <span class="winner-eyebrow">🏆 Film Terbaik</span>
+            <h2 class="winner-name">{{ hasil_ranking[0].nama_game }}</h2>
+            <div class="winner-score-row">
+                <span class="winner-score-label">Nilai Akhir SAW</span>
+                <span class="winner-score">{{ hasil_ranking[0].total }}</span>
+            </div>
+        </div>
+
+        <div class="winner-rank-badge">#1<br>Terbaik</div>
+    </div>
+    {% endif %}
+
+    <!-- Ranking Table -->
+    <section class="card table-card">
+        <div class="card-top">
+            <p class="card-label">Daftar Ranking</p>
+            <span class="film-count">{{ hasil_ranking|length }} film</span>
+        </div>
+
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-rank">Rank</th>
+                        <th class="col-poster">Poster</th>
+                        <th class="col-nama">Nama Film</th>
+                        <th class="col-score">Nilai Akhir</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set max_score = hasil_ranking[0].total if hasil_ranking else 1 %}
+                    {% for hasil in hasil_ranking %}
+                    <tr>
+                        <td class="col-rank">
+                            {% if loop.index == 1 %}
+                            <span class="rank-badge rank-1">1</span>
+                            {% elif loop.index == 2 %}
+                            <span class="rank-badge rank-2">2</span>
+                            {% elif loop.index == 3 %}
+                            <span class="rank-badge rank-3">3</span>
+                            {% else %}
+                            <span class="rank-badge rank-other">{{ loop.index }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="col-poster">
+                            {% if hasil.poster_url %}
+                            <img class="poster-film" src="{{ hasil.poster_url }}" alt="{{ hasil.nama_game }}">
+                            {% else %}
+                            <div class="poster-kosong">—</div>
+                            {% endif %}
+                        </td>
+                        <td class="col-nama">{{ hasil.nama_game }}</td>
+                        <td class="col-score">
+                            <div class="score-wrap">
+                                <span class="score-value">{{ hasil.total }}</span>
+                                <div class="score-bar-track">
+                                    <div class="score-bar-fill" data-pct="{{ ((hasil.total / max_score) * 100)|round(1) }}"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td class="empty-state" colspan="4">
+                            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                            <span>Belum ada hasil. Lengkapi data nilai terlebih dahulu.</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>
