@@ -188,7 +188,13 @@ def tambah_game():
 def hapus_game(id_game):
     conn = connect_db()
     cur = conn.cursor()
+
+    # hapus nilai dulu karena nilai masih pakai id_game
+    cur.execute("DELETE FROM nilai WHERE id_game = %s", (id_game,))
+
+    # baru hapus film/game
     cur.execute("DELETE FROM game WHERE id_game = %s", (id_game,))
+
     conn.commit()
     cur.close()
     conn.close()
